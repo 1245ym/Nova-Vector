@@ -582,10 +582,7 @@ function circleHit(x1,y1,r1,x2,y2,r2){
   return dx*dx+dy*dy<(r1+r2)*(r1+r2);
 }
 
-/* ------------------------------------------------------------------
-   PERFORMANCE: pre-rendered glow / smoke / thruster sprites.
-   Replaces live shadowBlur and per-frame createRadialGradient calls.
------------------------------------------------------------------- */
+/* PERFORMANCE: pre-rendered glow / smoke / thruster sprites. */
 const glowCache=new Map();
 function getGlowSprite(color,radius){
   const key=color+"|"+radius;
@@ -682,7 +679,6 @@ const thrusterSprite=(()=>{
   return c;
 })();
 
-/* Triangle collision helpers — spikes use triangle hitbox */
 function pointToSegmentDistanceSquared(px,py,ax,ay,bx,by){
   const abx=bx-ax, aby=by-ay;
   const apx=px-ax, apy=py-ay;
@@ -805,6 +801,7 @@ function activeDescriptions(){return gameMode==="enigma"?enigmaDescriptions:flig
 
 function renderMissions(){
   const missions=document.getElementById("missions");
+  if(!missions)return;
   const levels=activeLevels();
   const descriptions=activeDescriptions();
   missions.innerHTML="";
@@ -1399,9 +1396,7 @@ function updateParticles(delta){
   }
 }
 
-/* =========================================================
-   SHATTER CRASH ANIMATION
-   ========================================================= */
+/* SHATTER CRASH ANIMATION */
 const shatter = {
   active: false,
   timer: 0,
@@ -1752,9 +1747,6 @@ function crashGame(){
   touchElement.classList.add("hidden");
 }
 
-/* =========================================================
-   GAME EVENTS — WIN / PAUSE / RESUME
-   ========================================================= */
 function winGame(){
   if(gameState!=="play")return;
   gameState="win";
@@ -1798,9 +1790,7 @@ function createParticles(x,y,count){
   }
 }
 
-/* =========================================================
-   DRAWING
-   ========================================================= */
+/* DRAWING */
 function drawTriangle(x,baseY,size,pointsUp){
   gameContext.beginPath();
   if(pointsUp){
@@ -2151,9 +2141,7 @@ function drawGame(){
   gameContext.restore();
 }
 
-/* =========================================================
-   STUDIO
-   ========================================================= */
+/* STUDIO */
 const studioCanvas=document.getElementById("studio-canvas");
 const studioContext=studioCanvas.getContext("2d",{alpha:false});
 let studioWidth=900;
@@ -2330,9 +2318,7 @@ window.addEventListener("resize",()=>{
   if(!studioElement.classList.contains("hidden"))resizeStudio();
 },{passive:true});
 
-/* =========================================================
-   BUTTONS
-   ========================================================= */
+/* BUTTONS */
 pauseButton.addEventListener("click",pauseGame);
 hangarButton.addEventListener("click",returnToHangar);
 document.getElementById("resume-button").addEventListener("click",resumeGame);
@@ -3356,6 +3342,78 @@ window.__NOVA_AUDIO={
     }
   });
   render();
+})();
+</script>
+
+<!-- ============================================================
+     MISSION GRID — DEFENSIVE INIT
+     Fixes the "levels don't show until refresh" race condition.
+     Runs last so it can verify the base game script already ran.
+     ============================================================ -->
+<script>
+(function ensureMissionsRendered(){
+  "use strict";
+  let attempts = 0;
+  const MAX_ATTEMPTS = 60;
+
+  function tryRender(reason){
+    attempts++;
+    try {
+      const missions = document.getElementById("missions");
+      const menu = document.getElementById("menu");
+      if(!missions || !menu) return false;
+      if(menu.classList.contains("hidden")) return false;
+
+      const expected = (typeof activeLevels === "function")
+        ? activeLevels().length
+        : 5;
+
+      if(missions.children.length >= expected) return true;
+
+      if(typeof renderMissions === "function"){
+        renderMissions();
+        if(missions.children.length >= expected){
+          if(reason) console.log("NOVA//VECTOR missions rendered (" + reason + ")");
+          return true;
+        }
+      }
+    } catch(err){
+      console.warn("Missions render attempt failed:", err);
+    }
+    return false;
+  }
+
+  if(tryRender("immediate")) return;
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", () => tryRender("DOMContentLoaded"), {once:true});
+  }
+
+  window.addEventListener("load", () => tryRender("load"), {once:true});
+
+  const delays = [0, 16, 60, 150, 300, 600, 1200, 2400, 4000];
+  delays.forEach(ms => setTimeout(() => tryRender("t+" + ms), ms));
+
+  const poll = setInterval(() => {
+    if(tryRender("poll") || attempts >= MAX_ATTEMPTS){
+      clearInterval(poll);
+    }
+  }, 100);
+
+  document.getElementById("flight-mode")?.addEventListener("click", () => {
+    setTimeout(() => tryRender("mode-switch"), 0);
+  });
+  document.getElementById("enigma-mode")?.addEventListener("click", () => {
+    setTimeout(() => tryRender("mode-switch"), 0);
+  });
+
+  window.addEventListener("storage", () => {
+    setTimeout(() => tryRender("storage"), 0);
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if(!document.hidden) tryRender("visibility");
+  });
 })();
 </script>
 
