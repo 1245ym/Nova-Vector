@@ -1265,12 +1265,78 @@ html.nv-lowpower #nv-flight-vfx .nv-targeting{opacity:.05;}
   body.nv-critical .hud-chip{animation:none!important;}
 }
 
+
+
+/* ============================================================
+   NOVA//VECTOR BEAST MODE — premium visual shell
+   ============================================================ */
+:root{
+  --nv-ui-hot:#19eaff;
+  --nv-frame:rgba(25,234,255,.72);
+  --nv-frame-soft:rgba(25,234,255,.16);
+}
+#app::before{
+  content:"";position:absolute;inset:0;z-index:5;pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(2,8,20,.72),transparent 9%,transparent 91%,rgba(2,8,20,.72)),
+    linear-gradient(180deg,rgba(0,4,14,.52),transparent 12%,transparent 88%,rgba(0,3,10,.72));
+  mix-blend-mode:normal;
+}
+#app::after{
+  content:"";position:absolute;inset:0;z-index:7;pointer-events:none;
+  background:
+    repeating-linear-gradient(180deg,rgba(255,255,255,.022) 0 1px,transparent 1px 5px),
+    radial-gradient(circle at 50% 48%,transparent 48%,rgba(0,0,0,.18) 76%,rgba(0,0,0,.58) 100%);
+  opacity:.38;
+}
+#nv-beast-layer{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;}
+.nv-frame-corners{position:absolute;inset:12px;border:1px solid rgba(255,255,255,.045);box-shadow:inset 0 0 80px rgba(0,0,0,.24);}
+.nv-frame-corners::before,.nv-frame-corners::after{
+  content:"";position:absolute;width:120px;height:54px;
+  border-color:var(--nv-frame);border-style:solid;filter:drop-shadow(0 0 12px var(--nv-ui-hot));
+}
+.nv-frame-corners::before{left:-1px;top:-1px;border-width:2px 0 0 2px;}
+.nv-frame-corners::after{right:-1px;bottom:-1px;border-width:0 2px 2px 0;}
+.nv-frame-top,.nv-frame-bottom{position:absolute;left:6%;right:6%;height:1px;background:linear-gradient(90deg,transparent,var(--nv-frame),transparent);box-shadow:0 0 18px var(--nv-ui-hot);opacity:.65;}
+.nv-frame-top{top:12px}.nv-frame-bottom{bottom:12px}
+.nv-beast-radar{position:absolute;left:20px;bottom:18px;width:112px;height:112px;border:1px solid color-mix(in srgb,var(--nv-ui-hot) 45%,transparent);border-radius:50%;opacity:.42;overflow:hidden;box-shadow:0 0 24px color-mix(in srgb,var(--nv-ui-hot) 12%,transparent),inset 0 0 30px color-mix(in srgb,var(--nv-ui-hot) 8%,transparent);}
+.nv-beast-radar::before{content:"";position:absolute;inset:9px;border:1px solid color-mix(in srgb,var(--nv-ui-hot) 28%,transparent);border-radius:50%;}
+.nv-beast-radar::after{content:"";position:absolute;left:50%;top:4px;width:1px;height:50%;transform-origin:50% 100%;background:linear-gradient(transparent,var(--nv-ui-hot));box-shadow:0 0 12px var(--nv-ui-hot);animation:nvRadar 2.6s linear infinite;}
+@keyframes nvRadar{to{transform:rotate(360deg)}}
+.nv-side-readout{position:absolute;right:18px;bottom:24px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;color:#8eaaca;font:900 8px/1 "Oxanium",sans-serif;letter-spacing:.18em;text-transform:uppercase;opacity:.62;}
+.nv-side-readout b{color:#fff;font-size:10px;letter-spacing:.1em;}
+.nv-reticle{position:absolute;left:50%;top:50%;width:86px;height:86px;transform:translate(-50%,-50%);opacity:.18;}
+.nv-reticle::before,.nv-reticle::after{content:"";position:absolute;inset:0;border:1px solid var(--nv-ui-hot);border-radius:50%;box-shadow:0 0 18px color-mix(in srgb,var(--nv-ui-hot) 34%,transparent);}
+.nv-reticle::after{inset:16px;border-color:rgba(255,255,255,.45);animation:nvReticleSpin 9s linear infinite;}
+@keyframes nvReticleSpin{to{transform:rotate(-360deg)}}
+.nv-reticle i,.nv-reticle i::before,.nv-reticle i::after{position:absolute;content:"";display:block;background:var(--nv-ui-hot);box-shadow:0 0 10px var(--nv-ui-hot);}
+.nv-reticle i{left:50%;top:9px;width:1px;height:14px}.nv-reticle i::before{left:-31px;top:31px;width:14px;height:1px}.nv-reticle i::after{left:17px;top:31px;width:14px;height:1px}
+.nv-critical .nv-frame-corners{border-color:rgba(255,55,110,.22)}
+.nv-critical .nv-frame-top,.nv-critical .nv-frame-bottom{background:linear-gradient(90deg,transparent,#ff315f,transparent);box-shadow:0 0 24px #ff315f;animation:nvCriticalPulse .46s ease-in-out infinite alternate}
+@keyframes nvCriticalPulse{from{opacity:.35}to{opacity:1}}
+#hud .hud-chip{backdrop-filter:blur(12px) saturate(1.25);-webkit-backdrop-filter:blur(12px) saturate(1.25);position:relative;overflow:hidden;}
+#hud .hud-chip::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 28%,rgba(255,255,255,.1) 50%,transparent 72%);transform:translateX(-120%);animation:nvHudSweep 5.5s linear infinite;}
+@keyframes nvHudSweep{0%,55%{transform:translateX(-120%)}75%,100%{transform:translateX(120%)}}
+#pause-button,#hangar-button{box-shadow:0 0 26px color-mix(in srgb,var(--nv-ui-hot) 12%,transparent),inset 0 0 14px rgba(255,255,255,.03);}
+#hint{box-shadow:0 0 26px color-mix(in srgb,var(--nv-ui-hot) 10%,transparent);}
+@media(max-width:700px){
+  .nv-beast-radar,.nv-side-readout{display:none;}
+  .nv-reticle{opacity:.09;width:58px;height:58px;}
+  .nv-frame-corners{inset:6px;}
+  .nv-frame-top{top:6px}.nv-frame-bottom{bottom:6px}
+}
+@media(prefers-reduced-motion:reduce){
+  .nv-beast-radar::after,.nv-reticle::after,#hud .hud-chip::after{animation:none!important;}
+  .nv-critical .nv-frame-top,.nv-critical .nv-frame-bottom{animation:none!important;}
+}
+
 </style>
 </head>
 
 <body>
 <div id="app">
 <canvas id="game"></canvas>
+<div id="nv-beast-layer" aria-hidden="true"><div class="nv-frame-corners"></div><div class="nv-frame-top"></div><div class="nv-frame-bottom"></div><div class="nv-beast-radar"></div><div class="nv-side-readout"><span>VECTOR CORE</span><b id="nv-readout-core">ONLINE</b><span>REACTOR</span><b id="nv-readout-reactor">100%</b></div><div class="nv-reticle"><i></i></div></div>
 <div id="nova-flash"></div>
 
 <div id="nv-flight-vfx" aria-hidden="true">
@@ -1779,7 +1845,7 @@ function resizeGame(){
   viewportWidth=w;viewportHeight=h;
   const rawDpr=Math.max(1,window.devicePixelRatio||1);
   const budgetDpr=Math.sqrt(renderPixelBudget/Math.max(1,w*h));
-  deviceScale=Math.min(rawDpr,2.25,Math.max(1,budgetDpr));
+  deviceScale=Math.min(rawDpr,2.0,Math.max(1,budgetDpr));
   const targetCanvasWidth=Math.max(1,Math.round(w*deviceScale));
   const targetCanvasHeight=Math.max(1,Math.round(h*deviceScale));
   if(targetCanvasWidth!==lastCanvasWidth||targetCanvasHeight!==lastCanvasHeight){
@@ -2328,6 +2394,7 @@ function restartPracticeCheckpoint(){
 }
 
 function resetGameState(){
+  if(!Array.isArray(obstacles))obstacles=[]; if(!Array.isArray(orbs))orbs=[]; if(!Array.isArray(pads))pads=[]; if(!Array.isArray(portals))portals=[]; if(!Array.isArray(checkpoints))checkpoints=[];
   scroll=0;speedMultiplier=1;gravityDirection=1;ghostMode=false;particles=[];
   flightScore=0;flightStreak=0;
   checkpointScroll=0;checkpointY=logicalHeight*.5;
@@ -2347,6 +2414,7 @@ function startPractice(index){
 
 function startGame(index){
   blurActiveElement();clearShatter();
+  practiceMode=!!practiceMode;
   levelIndex=clamp(index|0,0,flightLevels.length-1);
   bumpAttempts(levelIndex);
   customLevel=null;customObjects=[];
@@ -2844,7 +2912,7 @@ function playCrashSound(){
   }catch(e){}
 }
 function crashGame(){
-  if(ghostMode||gameState!=="play")return;
+  if(ghostMode||gameState!=="play"||shatter.active)return;
   const level=currentLevel();
   const percent=Math.max(0,Math.min(100,Math.floor(scroll/level.length*100)));
   if(practiceMode&&!customLevel){
@@ -3384,7 +3452,8 @@ document.getElementById("death-home-button").addEventListener("click",returnToHa
 document.getElementById("win-home-button").addEventListener("click",returnToHangar);
 document.getElementById("next-button").addEventListener("click",()=>{
   if(customLevel)startCustomGame(customObjects,{
-    name:customLevel.name,author:customLevel.author,accent:customLevel.accent,speed:customLevel.speed
+    name:customLevel.name,author:customLevel.author,accent:customLevel.accent,speed:customLevel.speed,
+    gravity:customLevel.gravity,flap:customLevel.flap,lift:customLevel.lift,maxRise:customLevel.maxRise
   },customLevel._sourceKey);
   else if(levelIndex+1<flightLevels.length)startGame(levelIndex+1);
   else returnToHangar();
@@ -4439,5 +4508,136 @@ window.__NOVA_AUDIO={
 })();
 </script>
 
+
+<script>
+/* ============================================================
+   NOVA//VECTOR // BEAST SYSTEMS + HARDENING
+   Visual-only unless explicitly noted; collision geometry stays unchanged.
+   ============================================================ */
+(() => {
+  "use strict";
+  const el=id=>document.getElementById(id);
+  const finite=(v,f)=>Number.isFinite(Number(v))?Number(v):f;
+  let lastState="";
+  let fxParticles=[];
+  let lastFX=0;
+  const fxBudget=()=>document.documentElement.classList.contains("nv-lowpower")?24:44;
+
+  function setReadouts(){
+    const core=el("nv-readout-core"),reactor=el("nv-readout-reactor");
+    if(!core||!reactor)return;
+    const active=typeof gameState!=="undefined"&&gameState!=="menu";
+    core.textContent=active?(typeof practiceMode!=="undefined"&&practiceMode?"PRACTICE LINK":"FLIGHT LINK"):"STANDBY";
+    const level=typeof currentLevel==="function"?currentLevel():null;
+    const len=Math.max(1,finite(level?.length,1));
+    const pct=active?clamp(scroll/len,0,1):0;
+    reactor.textContent=Math.round((1-pct)*100)+"%";
+  }
+
+  function spawnFX(){
+    if(typeof gameState==="undefined"||gameState!=="play"||!player)return;
+    const accent=currentLevel()?.accent||"#19eaff";
+    const count=fxBudget();
+    while(fxParticles.length<count)fxParticles.push({x:player.x-26-Math.random()*34,y:player.y+(Math.random()-.5)*7,vx:-120-Math.random()*160,vy:(Math.random()-.5)*45,life:.18+Math.random()*.28,max:.46,color:accent,size:.7+Math.random()*1.6});
+  }
+  function updateFX(dt){
+    for(let i=fxParticles.length-1;i>=0;i--){
+      const p=fxParticles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;
+      if(p.life<=0)fxParticles.splice(i,1);
+    }
+  }
+  function drawFX(){
+    if(!gameContext||!player)return;
+    const c=gameContext,accent=currentLevel()?.accent||"#19eaff";
+    c.save();c.globalCompositeOperation="lighter";
+    for(const p of fxParticles){
+      const a=Math.max(0,p.life/p.max)*.75;
+      c.globalAlpha=a;c.fillStyle=accent;c.shadowBlur=12;c.shadowColor=accent;
+      c.fillRect(p.x,p.y,p.size*5,p.size);
+    }
+    c.shadowBlur=0;
+    const speed=finite(player.velocityY,0);
+    const energy=clamp(Math.abs(speed)/420,0,1);
+    c.translate(player.x,player.y);c.rotate(player.rotation||0);
+    c.globalAlpha=.08+.12*energy;c.strokeStyle=accent;c.lineWidth=1.5;
+    for(let i=0;i<3;i++){const r=20+i*8+energy*8;c.beginPath();c.arc(0,0,r,-.65+i*.12,.65+i*.12);c.stroke();}
+    c.globalAlpha=.65;c.fillStyle="#ffffff";
+    c.fillRect(2,-2,18,4);
+    c.globalAlpha=.42;c.fillStyle=accent;c.fillRect(16,-1.5,20,3);
+    c.restore();
+  }
+
+  function wrapDraw(){
+    if(typeof drawPlayer!=="function"||drawPlayer.__novaBeastWrapped)return;
+    const base=drawPlayer;
+    const wrapped=function(){
+      if(!player)return;
+      drawFX();
+      const c=gameContext,accent=currentLevel()?.accent||"#19eaff";
+      c.save();c.translate(player.x,player.y);c.rotate(player.rotation||0);c.globalCompositeOperation="lighter";
+      const pulse=.5+.5*Math.sin(elapsed*14);
+      c.globalAlpha=.12+.06*pulse;c.strokeStyle=accent;c.lineWidth=1;
+      c.beginPath();c.moveTo(-4,-15);c.lineTo(18,0);c.lineTo(-4,15);c.stroke();
+      c.globalAlpha=.3;c.fillStyle="#dfffff";c.fillRect(-4,-2,13,4);
+      c.globalAlpha=.18;c.shadowBlur=18;c.shadowColor=accent;c.strokeStyle=accent;c.strokeRect(-8,-10,18,20);
+      c.restore();
+      base();
+    };
+    wrapped.__novaBeastWrapped=true;drawPlayer=wrapped;
+  }
+
+  function wrapDrawGame(){
+    if(typeof drawGame!=="function"||drawGame.__novaBeastWrapped)return;
+    const base=drawGame;
+    const wrapped=function(){
+      base();
+      if(typeof gameState==="undefined"||gameState==="menu")return;
+      const c=gameContext;const accent=currentLevel()?.accent||"#19eaff";
+      c.save();
+      c.translate(displayOffsetX,displayOffsetY);c.scale(displayScale,displayScale);
+      // fine holographic grid
+      c.globalAlpha=.055;c.strokeStyle=accent;c.lineWidth=.5;
+      const grid=64;
+      for(let x=((scroll*.18)%grid)-grid;x<logicalWidth+grid;x+=grid){c.beginPath();c.moveTo(x,0);c.lineTo(x,logicalHeight);c.stroke();}
+      for(let y=32;y<logicalHeight;y+=grid){c.beginPath();c.moveTo(0,y);c.lineTo(logicalWidth,y);c.stroke();}
+      // level-speed streaks
+      if(gameState==="play"){
+        const level=currentLevel();const s=clamp(finite(level?.speed,300)/420,0,1);
+        c.globalAlpha=.045+.04*s;c.strokeStyle=accent;
+        for(let i=0;i<10;i++){const y=((i*89+elapsed*220)%logicalHeight);const len=50+100*s;c.beginPath();c.moveTo(logicalWidth-len,y);c.lineTo(logicalWidth,y);c.stroke();}
+      }
+      c.globalAlpha=1;c.restore();
+    };
+    wrapped.__novaBeastWrapped=true;drawGame=wrapped;
+  }
+
+  // Avoid duplicate handlers by installing once.
+  if(!window.__NOVA_BEAST_READY){
+    window.__NOVA_BEAST_READY=true;
+    const tick=()=>{
+      try{
+        const now=performance.now(),dt=Math.min(.05,Math.max(0,(now-lastFX)/1000||.016));lastFX=now;
+        wrapDraw();wrapDrawGame();setReadouts();
+        if(typeof gameState!=="undefined"&&gameState!==lastState){
+          lastState=gameState;
+          if(gameState==="menu"||gameState==="dead"||gameState==="win")fxParticles.length=0;
+        }
+        if(typeof gameState!=="undefined"&&gameState==="play"){spawnFX();updateFX(dt);}
+      }catch(e){console.warn("BEAST FX shield",e);}
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  // Stronger input hygiene for Safari, iOS and touch laptops.
+  const release=()=>{try{inputHeld=false;inputPointerId=null;inputHoldTime=0;}catch(_){} };
+  ["blur","pointerleave"].forEach(type=>window.addEventListener(type,release,{passive:true}));
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)release();},{passive:true});
+  window.addEventListener("beforeunload",release,{passive:true});
+
+  // Keep the canvas aligned after dynamic browser chrome / orientation changes.
+  if(window.visualViewport){visualViewport.addEventListener("resize",requestResizeGame,{passive:true});visualViewport.addEventListener("scroll",requestResizeGame,{passive:true});}
+})();
+</script>
 </body>
 </html>
